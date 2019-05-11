@@ -1,4 +1,4 @@
 Makefile
-/vendor/
 composer.lock
 /src/db_config.ini
+/vendor/
