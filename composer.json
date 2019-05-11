@@ -1,0 +1,20 @@
+{
+    "name": "dudeursobad/pet-project",
+    "autoload": {
+        "files": [
+            "src/options.php"
+        ]
+    },
+        "description": "petProject for Viktor the Great",
+    "authors": [
+        {
+            "name": "Ursobaddude",
+            "email": "lecoqq@ya.ru"
+        }
+    ],
+    "require": {
+        "aura/router": "^3.1",
+        "ramsey/uuid": "^3.8",
+        "zendframework/zend-diactoros": "^2.1"
+    }
+}
