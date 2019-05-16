@@ -4,7 +4,7 @@ use Aura\Router\RouterContainer;
 use Zend\Diactoros\ServerRequestFactory;
 
 // set up composer autoloader
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . './vendor/autoload.php';
 
 // create a server request object
 $request = ServerRequestFactory::fromGlobals(
@@ -21,7 +21,7 @@ $map = $routerContainer->getMap();
 
 // add a route to the map, and a handler for it
 	
-$map->post('set.task', '/', function ($request) {
+$map->post('set.task', '/add', function ($request) {
 	$new_task = $request->getQueryParams()['task'];
     $table = new Options();
     $table->add($new_task);
@@ -30,8 +30,8 @@ $map->post('set.task', '/', function ($request) {
     return $response;
 });
 
-$map->put('complete.task', '/', function ($request) {
-    $task_id = $request->getQueryParams()['id'];
+$map->put('complete.task', '/complete/{$id}', function ($request) {
+    $task_id = $request->getAttribute('$id');
     $table = new Options();
     $table->complete($task_id);
     $response = new Zend\Diactoros\Response();
@@ -39,8 +39,8 @@ $map->put('complete.task', '/', function ($request) {
     return $response;
 });
 
-$map->delete('delete.task', '/', function ($request) {
-    $task_id = $request->getQueryParams()['id'];
+$map->delete('delete.task', '/delete/{$id}', function ($request) {
+    $task_id = $request->getAttribute('$id');
     $table = new Options();
     $table->delete($task_id);
     $response = new Zend\Diactoros\Response();
@@ -48,7 +48,7 @@ $map->delete('delete.task', '/', function ($request) {
     return $response;
 });
 
-$map->get('show.all', '/', function () {
+$map->get('show.all', '/show', function () {
     $table = new Options();
 	$table->show();
 	$response = new Zend\Diactoros\Response();
