@@ -4,7 +4,7 @@ use Aura\Router\RouterContainer;
 use Zend\Diactoros\ServerRequestFactory;
 
 // set up composer autoloader
-require __DIR__ . './vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 // create a server request object
 $request = ServerRequestFactory::fromGlobals(
@@ -30,8 +30,8 @@ $map->post('set.task', '/add', function ($request) {
     return $response;
 });
 
-$map->put('complete.task', '/complete/{$id}', function ($request) {
-    $task_id = $request->getAttribute('$id');
+$map->put('complete.task', '/complete/{id}', function ($request) {
+    $task_id = $request->getAttribute('id');
     $table = new Options();
     $table->complete($task_id);
     $response = new Zend\Diactoros\Response();
@@ -39,8 +39,8 @@ $map->put('complete.task', '/complete/{$id}', function ($request) {
     return $response;
 });
 
-$map->delete('delete.task', '/delete/{$id}', function ($request) {
-    $task_id = $request->getAttribute('$id');
+$map->delete('delete.task', '/delete/{id}', function ($request) {
+    $task_id = $request->getAttribute('id');
     $table = new Options();
     $table->delete($task_id);
     $response = new Zend\Diactoros\Response();
