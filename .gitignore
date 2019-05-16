@@ -1,4 +1,3 @@
-Makefile
-composer.lock
+/Public/Makefile
 /src/db_config.ini
 /vendor/
