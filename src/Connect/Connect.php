@@ -1,6 +1,8 @@
 <?php
 
-class DataBase {
+namespace App\Connect;
+
+class Connect {
 
 private static $conn;
  

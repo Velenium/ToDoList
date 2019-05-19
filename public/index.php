@@ -1,5 +1,6 @@
 <?php
 
+use App\Options;
 use Aura\Router\RouterContainer;
 use Zend\Diactoros\ServerRequestFactory;
 

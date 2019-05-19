@@ -1,9 +1,10 @@
 {
     "name": "dudeursobad/pet-project",
     "autoload": {
-        "files": [
-            "src/options.php"
-        ]
+        "psr-4": {
+            "App\\" : "src/",
+            "App\\Connect\\" : "src/Connect/"
+        }
     },
         "description": "petProject for Viktor the Great",
     "authors": [
