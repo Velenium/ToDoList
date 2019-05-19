@@ -24,7 +24,7 @@ $map = $routerContainer->getMap();
 $map->post('set.task', '/add', function ($request) {
 	$new_task = $request->getQueryParams()['task'];
     $table = new Options();
-    $table->add($new_task);
+    $table->addNewTask($new_task);
     $response = new Zend\Diactoros\Response();
     $response->getBody()->write("New one added!");
     return $response;
@@ -33,7 +33,7 @@ $map->post('set.task', '/add', function ($request) {
 $map->put('complete.task', '/complete/{id}', function ($request) {
     $task_id = $request->getAttribute('id');
     $table = new Options();
-    $table->complete($task_id);
+    $table->makeTaskComplieted($task_id);
     $response = new Zend\Diactoros\Response();
     $response->getBody()->write("Completed!");
     return $response;
@@ -42,7 +42,7 @@ $map->put('complete.task', '/complete/{id}', function ($request) {
 $map->delete('delete.task', '/delete/{id}', function ($request) {
     $task_id = $request->getAttribute('id');
     $table = new Options();
-    $table->delete($task_id);
+    $table->deleteTask($task_id);
     $response = new Zend\Diactoros\Response();
     $response->getBody()->write("Deleted!");
     return $response;
@@ -50,7 +50,7 @@ $map->delete('delete.task', '/delete/{id}', function ($request) {
 
 $map->get('show.all', '/show', function () {
     $table = new Options();
-	$table->show();
+	$table->showAll();
 	$response = new Zend\Diactoros\Response();
     $response->getBody()->write("All the things you need to do!");
     return $response;

@@ -13,23 +13,23 @@ class Options //Service
 		$this->PDO = DataBase::connect();
 	}
 
-	public function add(string $text)
+	public function addNewTask(string $text)
 	{
 		$id = Uuid::uuid4();
 		$this->PDO->query("INSERT INTO todo (task_name, task_id) VALUES ('$text', '$id')");
 	}
 
-	public function complete(string $id)
+	public function makeTaskComplieted(string $id)
 	{
 		$this->PDO->query("UPDATE todo SET accomplishment = true, acc_date = now() WHERE (task_id = '$id')");
 	}
 
-	public function delete(string $id)
+	public function deleteTask(string $id)
 	{
 		$this->PDO->query("DELETE FROM todo WHERE (task_id = '$id')");
 	}
 
-	public function show()
+	public function showAll()
 	{
 		$selection = $this->PDO->query("SELECT task_name, task_id, creation_date, accomplishment, acc_date FROM todo");
 		$result = $selection->fetchAll(PDO::FETCH_ASSOC);
