@@ -33,7 +33,7 @@ class Options //Service
 	public function showAll()
 	{
 		$selection = $this->PDO->query("SELECT task_name, task_id, creation_date, accomplishment, acc_date FROM todo");
-		$result = $selection->fetchAll();
+		$result = $selection->fetchAll(\PDO::FETCH_ASSOC);
 		if (empty($result)) {
 			print_r('Nothing! Hell Yeah!' . PHP_EOL);
 		} else {
