@@ -1,11 +1,10 @@
 <?php
 
+require __DIR__ . '/../vendor/autoload.php';
+
 use App\Options;
 use Aura\Router\RouterContainer;
 use Zend\Diactoros\ServerRequestFactory;
-
-// set up composer autoloader
-require __DIR__ . '/../vendor/autoload.php';
 
 // create a server request object
 $request = ServerRequestFactory::fromGlobals(
@@ -23,11 +22,12 @@ $map = $routerContainer->getMap();
 // add a route to the map, and a handler for it
 	
 $map->post('set.task', '/add', function ($request) {
-	$new_task = $request->getQueryParams()['task'];
+	$name = $request->getQueryParams()['name'];
+    $body = $request->getQueryParams()['body'];
     $table = new Options();
-    $table->addNewTask($new_task);
+    $id = $table->addNewTask($name, $body);
     $response = new Zend\Diactoros\Response();
-    $response->getBody()->write("New one added!");
+    $response->getBody()->write("New task id: " . $id);
     return $response;
 });
 

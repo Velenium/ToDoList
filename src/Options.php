@@ -14,25 +14,26 @@ class Options //Service
 		$this->PDO = Connect::connect();
 	}
 
-	public function addNewTask(string $text)
+	public function addNewTask(String $name, String $body)
 	{
 		$id = Uuid::uuid4();
-		$this->PDO->query("INSERT INTO todo (task_name, task_id) VALUES ('$text', '$id')");
+		$this->PDO->query("INSERT INTO todo (name, id, body, status) VALUES ('$name', '$id', '$body', 'new')");
+		return $id;
 	}
 
 	public function makeTaskComplieted(string $id)
 	{
-		$this->PDO->query("UPDATE todo SET accomplishment = true, acc_date = now() WHERE (task_id = '$id')");
+		$this->PDO->query("UPDATE todo SET Status = done WHERE (id = '$id')");
 	}
 
 	public function deleteTask(string $id)
 	{
-		$this->PDO->query("DELETE FROM todo WHERE (task_id = '$id')");
+		$this->PDO->query("DELETE FROM todo WHERE (id = '$id')");
 	}
 
 	public function showAll()
 	{
-		$selection = $this->PDO->query("SELECT task_name, task_id, creation_date, accomplishment, acc_date FROM todo");
+		$selection = $this->PDO->query("SELECT * FROM todo");
 		$result = $selection->fetchAll(\PDO::FETCH_ASSOC);
 		if (empty($result)) {
 			print_r('Nothing! Hell Yeah!' . PHP_EOL);

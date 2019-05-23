@@ -2,24 +2,12 @@
 
 namespace App\Connect;
 
-class Connect {
-
-    private static $connect;
- 
-    public function connect()
+class Connect
+{
+    public function connect() : \PDO
     {
-        $connectString = Config::getConnectionString();
-        $options = Config::getOptions();
-        $pdo = new \PDO($connectString, null, null, $options);
- 
-        return $pdo;
-    }
-
-    public static function get() {
-        if (null === static::$conn) {
-            static::$conn = new static();
-        }
- 
-        return static::$conn;
+    	$connectionString = Config::getConnectionString();
+    	$options = Config::getOptions();
+        return new \PDO($connectionString, null, null, $options);
     }
 }
