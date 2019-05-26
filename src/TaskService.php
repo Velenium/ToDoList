@@ -5,7 +5,7 @@ namespace App;
 use App\Connect\Connect;
 use Ramsey\Uuid\Uuid;
 
-class Options //Service
+class TaskService
 {
 	private $PDO;
 
@@ -23,7 +23,7 @@ class Options //Service
 
 	public function makeTaskComplieted(string $id)
 	{
-		$this->PDO->query("UPDATE todo SET Status = done WHERE (id = '$id')");
+		$this->PDO->query("UPDATE todo SET Status = 'done' WHERE (id = '$id')");
 	}
 
 	public function deleteTask(string $id)

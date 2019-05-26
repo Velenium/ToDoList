@@ -21,37 +21,37 @@ $map = $routerContainer->getMap();
 
 // add a route to the map, and a handler for it
 	
-$map->post('set.task', '/add', function ($request) {
+$map->post('set.task', '/tasks', function ($request) {
 	$name = $request->getQueryParams()['name'];
     $body = $request->getQueryParams()['body'];
-    $table = new Options();
-    $id = $table->addNewTask($name, $body);
+    $controller = new Options();
+    $id = $controller->addNewTask($name, $body);
     $response = new Zend\Diactoros\Response();
-    $response->getBody()->write("New task id: " . $id);
+    $response->getBody()->write("New task id: " . $id); //в слой контроллера
     return $response;
 });
 
-$map->put('complete.task', '/complete/{id}', function ($request) {
-    $task_id = $request->getAttribute('id');
-    $table = new Options();
-    $table->makeTaskComplieted($task_id);
+$map->put('complete.task', '/tasks/{id}', function ($request) {
+    $id = $request->getAttribute('id');
+    $controller = new Options();
+    $controller->makeTaskComplieted($id);
     $response = new Zend\Diactoros\Response();
     $response->getBody()->write("Completed!");
     return $response;
 });
 
-$map->delete('delete.task', '/delete/{id}', function ($request) {
-    $task_id = $request->getAttribute('id');
-    $table = new Options();
-    $table->deleteTask($task_id);
+$map->delete('delete.task', '/tasks/{id}', function ($request) {
+    $id = $request->getAttribute('id');
+    $controller = new Options();
+    $controller->deleteTask($id);
     $response = new Zend\Diactoros\Response();
     $response->getBody()->write("Deleted!");
     return $response;
 });
 
-$map->get('show.all', '/show', function () {
-    $table = new Options();
-	$table->showAll();
+$map->get('show.all', '/tasks', function () {
+    $controller = new Options();
+	$controller->showAll();
 	$response = new Zend\Diactoros\Response();
     $response->getBody()->write("All the things you need to do!");
     return $response;
