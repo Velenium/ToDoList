@@ -21,24 +21,37 @@ class Task
 		return new self($name, $id, $body, $status);
 	}
 
-	public static function createFromDTO(Task $object)
+	public static function createFromDTO(TaskData $taskData) : self
 	{
-		return new self($object->name, $object->id, $object->body, $object->status);
+		return new self($taskData->name, $taskData->id, $taskData->body, $taskData->status);
 	}
 
-	public function taskStatusUpdate()
+	public function taskBodyUpdate(String $newBody)
 	{
-		$possibleStatuses = ['in progress', 'complited'];
+		$this->taskData->body = $newBody;
+	}
 
-		if ($this->taskData->status === 'complited')
+	public function taskStatusUpdate(String $newStatus)
+	{
+		$possibleStatuses = ['in progress', 'completed', 'canceled'];
+
+		if (!in_array($newStatus, $possibleStatuses)) 
 		{
-			throw new \Exeption('Task already comlited');
+			throw new \Exception('Expected status: in progress/completed/canceled');
+		} 
+		elseif ($this->taskData->status === 'completed' && $newStatus === 'canceled') 
+		{
+			throw new \Exception('Task already comleted');
+		} 
+		elseif ($this->taskData->status === 'canceled' && $newStatus === 'completed') 
+		{
+			throw new \Exception('Task already canceled');
 		}
 
-		$this->taskData->status = 'in progress';
+		$this->taskData->status = $newStatus;
 	}
 
-	public function getUpdatedTask()
+	public function getTaskData() : TaskData
 	{
 		return $this->taskData;
 	}

@@ -2,43 +2,91 @@
 
 namespace App;
 
-use App\Connect\Connect;
+require __DIR__ . '/../vendor/autoload.php';
+
 use Ramsey\Uuid\Uuid;
+use App\Task;
+use App\TaskData;
+use App\TaskRepository;
 
 class TaskService
 {
-	private $PDO;
+	private $repository;
 
 	public function __construct()
 	{
-		$this->PDO = Connect::connect();
+		$this->repository = new TaskRepository();
 	}
 
-	public function addNewTask(String $name, String $body)
+	public function addNewTask(String $name, String $body) : String
 	{
-		$id = Uuid::uuid4();
-		$this->PDO->query("INSERT INTO todo (name, id, body, status) VALUES ('$name', '$id', '$body', 'new')");
+		$task = Task::createNewTask($name, $body);
+		$taskData = $task->getTaskData();
+		$this->repository->create($taskData);
+		$id = $task->getTaskData()->id;
+
 		return $id;
 	}
 
-	public function makeTaskComplieted(string $id)
+	public function updateTaskBody(Uuid $id, String $newBody)
 	{
-		$this->PDO->query("UPDATE todo SET Status = 'done' WHERE (id = '$id')");
+		$givenTaskData = $this->repository->find($id);
+		$task = Task::createFromDTO($givenTaskData);
+		$task->taskBodyUpdate($newBody);
+		$taskData = $task->getTaskData();
+		$this->repository->update($taskData);
+
+		return 'Body updated';
 	}
 
-	public function deleteTask(string $id)
+		public function updateTaskStatus(Uuid $id, String $newStatus)
 	{
-		$this->PDO->query("DELETE FROM todo WHERE (id = '$id')");
+		$givenTaskData = $this->repository->find($id);
+		$task = Task::createFromDTO($givenTaskData);
+		$task->taskStatusUpdate($newStatus);
+		$taskData = $task->getTaskData();
+		$this->repository->update($taskData);
+
+		return 'Status updated';
+	}
+
+	public function deleteTask(Uuid $id)
+	{
+		$givenTaskData = $this->repository->find($id);
+		$task = Task::createFromDTO($givenTaskData);
+		$taskData = $task->getTaskData();
+		$this->repository->delete($taskData);
+
+		return 'Task deleted';
+	}
+
+	public function show(Uuid $id)
+	{
+		$taskData = $this->repository->find($id);
+		$taskData->id->toString();
+
+		return $taskData;
 	}
 
 	public function showAll()
 	{
-		$selection = $this->PDO->query("SELECT * FROM todo");
-		$result = $selection->fetchAll(\PDO::FETCH_ASSOC);
-		if (empty($result)) {
-			print_r('Nothing! Hell Yeah!' . PHP_EOL);
-		} else {
-			print_r($result);
-		}
+		return $this->repository->findAll();
 	}
 }
+
+
+//$a = new TaskService();
+
+//print_r($a->addNewTask('second', 'to do'));
+
+//$id = Uuid::FromString("8fd8463a-0000-4418-81a6-d5c78987a913");
+//print_r($a->updateTaskBody($id, 'nowdays'));
+
+//print_r($a->updateTaskStatus($id, 'new')); #exception throw
+//print_r($a->updateTaskStatus($id, 'in progress'));
+
+//print_r($a->deleteTask($id));
+
+//print_r($a->show($id)); #ну типа работает, только Uuid выводится как говно
+
+//print_r($a->showAll());

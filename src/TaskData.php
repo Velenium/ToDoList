@@ -6,10 +6,10 @@ use Ramsey\Uuid\Uuid;
 
 class TaskData
 {
-	private $name;
-	private $id;
-	private $body;
-	private $status;
+	public $name;
+	public $id;
+	public $body;
+	public $status;
 
 	public function __construct(String $name, Uuid $id, String $body, String $status)
 	{
