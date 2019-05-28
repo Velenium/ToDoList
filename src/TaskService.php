@@ -2,8 +2,6 @@
 
 namespace App;
 
-require __DIR__ . '/../vendor/autoload.php';
-
 use Ramsey\Uuid\Uuid;
 use App\Task;
 use App\TaskData;
@@ -18,9 +16,14 @@ class TaskService
 		$this->repository = new TaskRepository();
 	}
 
-	public function addNewTask(String $name, String $body) : String
+	public function createNewTask(String $name, String $body) : String
 	{
 		$task = Task::createNewTask($name, $body);
+
+		if (is_string($task)) {
+			return $task;
+		}
+
 		$taskData = $task->getTaskData();
 		$this->repository->create($taskData);
 		$id = $task->getTaskData()->id;
@@ -28,29 +31,39 @@ class TaskService
 		return $id;
 	}
 
-	public function updateTaskBody(Uuid $id, String $newBody)
+	public function taskBodyUpdate(Uuid $id, String $newBody) : String
 	{
 		$givenTaskData = $this->repository->find($id);
 		$task = Task::createFromDTO($givenTaskData);
-		$task->taskBodyUpdate($newBody);
+		$bodyError = $task->taskBodyUpdate($newBody);
+
+		if ($bodyError !== null) {
+			return $bodyError;
+		}
+
 		$taskData = $task->getTaskData();
 		$this->repository->update($taskData);
 
 		return 'Body updated';
 	}
 
-		public function updateTaskStatus(Uuid $id, String $newStatus)
+		public function taskStatusUpdate(Uuid $id, String $newStatus) : String
 	{
 		$givenTaskData = $this->repository->find($id);
 		$task = Task::createFromDTO($givenTaskData);
-		$task->taskStatusUpdate($newStatus);
+		$statusError = $task->taskStatusUpdate($newStatus);
+
+		if ($statusError !== null) {
+			return $statusError;
+		}
+
 		$taskData = $task->getTaskData();
 		$this->repository->update($taskData);
 
 		return 'Status updated';
 	}
 
-	public function deleteTask(Uuid $id)
+	public function taskDelete(Uuid $id) : String
 	{
 		$givenTaskData = $this->repository->find($id);
 		$task = Task::createFromDTO($givenTaskData);
@@ -60,7 +73,7 @@ class TaskService
 		return 'Task deleted';
 	}
 
-	public function show(Uuid $id)
+	public function show(Uuid $id) : TaskData
 	{
 		$taskData = $this->repository->find($id);
 		$taskData->id->toString();
@@ -68,25 +81,8 @@ class TaskService
 		return $taskData;
 	}
 
-	public function showAll()
+	public function showAll() : Array
 	{
 		return $this->repository->findAll();
 	}
 }
-
-
-//$a = new TaskService();
-
-//print_r($a->addNewTask('second', 'to do'));
-
-//$id = Uuid::FromString("8fd8463a-0000-4418-81a6-d5c78987a913");
-//print_r($a->updateTaskBody($id, 'nowdays'));
-
-//print_r($a->updateTaskStatus($id, 'new')); #exception throw
-//print_r($a->updateTaskStatus($id, 'in progress'));
-
-//print_r($a->deleteTask($id));
-
-//print_r($a->show($id)); #ну типа работает, только Uuid выводится как говно
-
-//print_r($a->showAll());

@@ -14,8 +14,17 @@ class Task
 		$this->taskData = new TaskData($name, $id, $body, $status);
 	}
 
-	public static function createNewTask(String $name, String $body) : self
+	public static function createNewTask(String $name, String $body)
 	{
+		$minLength = 3; //вынести в константу
+
+		if (strlen($name) < $minLength) {
+			return 'Minimum name length is 3';
+		}
+		elseif (strlen($body) < $minLength) {
+			return 'Minimum body length is 3';
+		}
+
 		$id = Uuid::uuid4();
 		$status = 'new';
 		return new self($name, $id, $body, $status);
@@ -28,6 +37,18 @@ class Task
 
 	public function taskBodyUpdate(String $newBody)
 	{
+		$minLength = 3; //вынести в константу
+
+		if (strlen($newBody < $minBodyLength)) {
+			return 'Minimum body length is 3';
+		}
+		elseif ($this->taskData->status === 'completed') {
+			return 'Task already completed';
+		}
+		elseif ($this->taskData->status === 'canceled') {
+			return 'Task already canceled';
+		}
+
 		$this->taskData->body = $newBody;
 	}
 
@@ -37,15 +58,15 @@ class Task
 
 		if (!in_array($newStatus, $possibleStatuses)) 
 		{
-			throw new \Exception('Expected status: in progress/completed/canceled');
+			return 'Expected status: in progress/completed/canceled';
 		} 
 		elseif ($this->taskData->status === 'completed' && $newStatus === 'canceled') 
 		{
-			throw new \Exception('Task already comleted');
+			return 'Task already comleted';
 		} 
 		elseif ($this->taskData->status === 'canceled' && $newStatus === 'completed') 
 		{
-			throw new \Exception('Task already canceled');
+			return 'Task already canceled';
 		}
 
 		$this->taskData->status = $newStatus;
