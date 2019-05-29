@@ -7,6 +7,10 @@ use App\TaskData;
 
 class Task
 {
+	const MINLENGTH = 3;
+	const POSSIBLESTATUS = ['in progress', 'canceled', 'completed'];
+
+
 	private $taskData;
 
 	public function __construct(String $name, Uuid $id, String $body, String $status)
@@ -16,13 +20,11 @@ class Task
 
 	public static function createNewTask(String $name, String $body)
 	{
-		$minLength = 3; //вынести в константу
-
-		if (strlen($name) < $minLength) {
-			return 'Minimum name length is 3';
+		if (strlen($name) < self::MINLENGTH) {
+			return 'Minimum name length is ' . self::MINLENGTH;
 		}
-		elseif (strlen($body) < $minLength) {
-			return 'Minimum body length is 3';
+		elseif (strlen($body) < self::MINLENGTH) {
+			return 'Minimum body length is ' . self::MINLENGTH;
 		}
 
 		$id = Uuid::uuid4();
@@ -37,10 +39,8 @@ class Task
 
 	public function taskBodyUpdate(String $newBody)
 	{
-		$minLength = 3; //вынести в константу
-
-		if (strlen($newBody < $minBodyLength)) {
-			return 'Minimum body length is 3';
+		if (strlen($newBody < self::MINLENGTH)) {
+			return 'Minimum body length is ' . self::MINLENGTH;
 		}
 		elseif ($this->taskData->status === 'completed') {
 			return 'Task already completed';
@@ -54,9 +54,7 @@ class Task
 
 	public function taskStatusUpdate(String $newStatus)
 	{
-		$possibleStatuses = ['in progress', 'completed', 'canceled'];
-
-		if (!in_array($newStatus, $possibleStatuses)) 
+		if (!in_array($newStatus, self::POSSIBLESTATUS)) 
 		{
 			return 'Expected status: in progress/completed/canceled';
 		} 
