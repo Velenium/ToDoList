@@ -3,7 +3,6 @@
 namespace App;
 
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 use App\Connect\Connect;
 use App\TaskData;
 
@@ -19,7 +18,7 @@ class TaskRepository
 
 	public function find($id) : TaskData
 	{
-		$stmt = $this->pdo->prepare('SELECT * FROM todo WHERE (id = :id)');
+		$stmt = $this->pdo->prepare("SELECT * FROM todo WHERE (id = :id)");
 		$stmt->execute([':id' => $id]);
 		$data = $stmt->fetch(\PDO::FETCH_ASSOC);
 		$taskData = new TaskData(
