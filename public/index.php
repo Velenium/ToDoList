@@ -2,12 +2,11 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use App\TaskController;
 use Aura\Router\RouterContainer;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
-
+use App\TaskController;
 
 $controller = new TaskController();
 
