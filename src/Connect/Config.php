@@ -9,13 +9,20 @@ class Config
 		return new self;
 	}
 
-	public function getConnectionString() : String
+		private static function parseConfigFile() : Array
 	{
 		$params = parse_ini_file('db_config.ini');
 
-        if ($params === false) {
+		if ($params === false) {
             throw new \Exception("Error reading database configuration file");
         }
+
+        return $params;
+	}
+
+	public function getConnectionString() : String
+	{
+		$params = self::parseConfigFile();
         
         $connectionString = sprintf("pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s", 
                 $params['host'], 
@@ -29,11 +36,7 @@ class Config
 
 	public function getOptions() : Array
 	{
-		$params = parse_ini_file('db_config.ini');
-
-		if ($params === false) {
-            throw new \Exception("Error reading database configuration file");
-        }
+		$params = self::parseConfigFile();
 
         return $params['opt'];
 	}
