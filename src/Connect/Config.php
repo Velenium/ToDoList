@@ -9,7 +9,7 @@ class Config
 		return new self;
 	}
 
-		private static function parseConfigFile() : Array
+	private static function parseConfigFile() : Array
 	{
 		$params = parse_ini_file('db_config.ini');
 
