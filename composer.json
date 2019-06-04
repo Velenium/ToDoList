@@ -2,8 +2,7 @@
     "name": "dudeursobad/pet-project",
     "autoload": {
         "psr-4": {
-            "App\\" : "src/",
-            "App\\Connect\\" : "src/Connect/"
+            "App\\" : "src/"
         }
     },
         "description": "petProject for Viktor the Great",
