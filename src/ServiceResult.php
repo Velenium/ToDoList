@@ -31,22 +31,22 @@ class ServiceResult
 	{
 		switch ($this->body) {
 			case 'Minimum name length is 3' : 
-				$this->status = '400';
+				$this->status = '411';
 				break;
 			case 'Minimum body length is 3' :
-				$this->status = '400';
+				$this->status = '411';
 				break;
 			case 'Task does not exist' :
 				$this->status = '404';
 				break;
 			case 'Expected status: in progress/completed/canceled' :
-				$this->status = '400';
+				$this->status = '406';
 				break;
 			case 'Task already canceled' :
-				$this->status = '400';
+				$this->status = '409';
 				break;
 			case 'Task already completed' :
-				$this->status = '400';
+				$this->status = '409';
 				break;
 			case null :
 				$this->status = '204';
