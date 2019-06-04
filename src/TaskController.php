@@ -3,7 +3,9 @@
 namespace App;
 
 use App\TaskService;
+use App\ServiceResult;
 use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\Response;
 use Ramsey\Uuid\Uuid;
 
 class TaskController
@@ -15,51 +17,77 @@ class TaskController
 		$this->service = new TaskService();
 	}
 
-	public function createNewTask(ServerRequest $request) : String
-	{	
+	public function createNewTask(ServerRequest $request) : Response
+	{
 		$name = $request->getQueryParams()['name'];
 		$body = $request->getQueryParams()['body'];
+		
 		$result = $this->service->createNewTask($name, $body);
+		$response = $this->formResponse($result);
 
-		return json_encode($result);
+		return $response;
 	}
 
-	public function taskBodyUpdate(ServerRequest $request) : String
+	public function taskBodyUpdate(ServerRequest $request) : Response
 	{
 		$id = Uuid::FromString($request->getAttribute('id'));
 		$newBody = $request->getQueryParams()['body'];
-		$result = $this->service->taskBodyUpdate($id, $newBody);
 
-		return json_encode($result);
+		$result = $this->service->taskBodyUpdate($id, $newBody);
+		$response = $this->formResponse($result);
+
+		return $response;
 	}
 
-	public function taskStatusUpdate(ServerRequest $request) : String
+	public function taskStatusUpdate(ServerRequest $request) : Response
 	{
 		$id = Uuid::FromString($request->getAttribute('id'));
 		$newStatus = $request->getQueryParams()['status'];
+
 		$result = $this->service->taskStatusUpdate($id, $newStatus);
+		$response = $this->formResponse($result);
 
-		return json_encode($result);
+		return $response;
 	}
 
-	public function taskDelete(ServerRequest $request) : String
+	public function taskDelete(ServerRequest $request) : Response
 	{
 		$id = Uuid::FromString($request->getAttribute('id'));
+
 		$result = $this->service->taskDelete($id);
+		$response = $this->formResponse($result);
 
-		return json_encode($result);
+		return $response;
 	}
 
-	public function show(ServerRequest $request) : String
+	public function show(ServerRequest $request) : Response
 	{
 		$id = Uuid::FromString($request->getAttribute('id'));
-		$result = $this->service->show($id);
 
-		return json_encode($result);
+		$result = $this->service->show($id);
+		$response = $this->formResponse($result);
+
+		return $response;
 	}
 
-	public function showAll() : String
+	public function showAll() : Response
 	{
-		return json_encode($this->service->showAll());
+		$result = $this->service->showAll();
+		$response = $this->formResponse($result);
+
+		return $response;
+	}
+
+	public function formResponse(ServiceResult $serviceResult) : Response
+	{
+		$status = $serviceResult->getStatus();
+		$body = $serviceResult->getBody();
+
+		$response = new Response();
+
+		$response->getBody()->write(json_encode($body));
+		$response = $response->withStatus($status);
+
+		return $response;
 	}
 }
