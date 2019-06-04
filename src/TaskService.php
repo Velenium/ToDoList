@@ -97,7 +97,7 @@ class TaskService
 		$task = Task::createFromDTO($givenTaskData);
 		$taskData = $task->getTaskData();
 
-		$validator = ValidateDeletion::init();
+		$validator = ValidateTaskData::init();
 		$error = $validator->validateDTO($taskData);
 
 		if ($error === 'not found') {
