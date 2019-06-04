@@ -50,6 +50,7 @@ class ServiceResult
 				break;
 			case null :
 				$this->status = '204';
+				break;
 		}
 	}
 }
