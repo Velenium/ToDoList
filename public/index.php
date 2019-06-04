@@ -23,56 +23,32 @@ $map = $routerContainer->getMap();
 	
 $map->post('add.task', '/tasks', function (ServerRequest $request) use ($controller) : Response
 {
-	$result = $controller->createNewTask($request);
-	$response = new Response();
-	$response->getBody()->write($result); 
-
-	return $response;
+	return $controller->createNewTask($request);
 });
 
 $map->put('set.new.body', '/tasks/{id}/body/update', function (ServerRequest $request) use ($controller) : Response
 {
-	$result = $controller->taskBodyUpdate($request);
-	$response = new Response();
-	$response->getBody()->write($result); 
-
-	return $response;
+	return $controller->taskBodyUpdate($request);
 });
 
 $map->put('set.new.status', '/tasks/{id}/status/update', function (ServerRequest $request) use ($controller) : Response
 {
-	$result = $controller->taskStatusUpdate($request);
-	$response = new Response();
-	$response->getBody()->write($result); 
-
-	return $response;
+	return $controller->taskStatusUpdate($request);
 });
 
 $map->delete('delete.task', '/tasks/{id}', function (ServerRequest $request) use ($controller) : Response
 {
-	$result = $controller->taskDelete($request);
-	$response = new Response();
-	$response->getBody()->write($result); 
-
-	return $response;
+	return $controller->taskDelete($request);
 });
 
 $map->get('show.task', '/tasks/{id}', function (ServerRequest $request) use ($controller) : Response
 {
-	$result = $controller->show($request);
-	$response = new Response();
-	$response->getBody()->write($result); 
-
-	return $response;
+	return $controller->show($request);
 });
 
 $map->get('show.all', '/tasks', function () use ($controller) : Response
 {
-	$result = $controller->showAll();
-	$response = new Response();
-	$response->getBody()->write($result); 
-
-	return $response;
+	return $controller->showAll();
 });
 
 $matcher = $routerContainer->getMatcher();
