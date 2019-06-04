@@ -39,7 +39,7 @@ class TaskRepository
 		return $taskDataAll;
 	}
 
-	public function create($taskData)
+	public function create(TaskData $taskData)
 	{
 		$stmt = $this->pdo->prepare('INSERT INTO todo (name, id, body, status) 
 			VALUES (:name, :id, :body, :status)');
