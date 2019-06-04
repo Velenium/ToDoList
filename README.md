@@ -4,24 +4,24 @@ Server->Router->Controller->Service(->Entity)->Repository->DataBase
 
 Things used:
 
-	1. Software:
-		Git
-		Composer
-	2. Libraries:
-		Ramsey/Uuid  - genererating unique id
-		Zend/Diactors - getting request, forming response
-		Aura/Routing - http mapping
-	3. Patterns & nearby things:
-		DTO
-		Named Constructors
-		Data Hinting
+1. Software: </br>
+	Git </br>
+	Composer </br>
+2. Libraries: </br>
+	Ramsey/Uuid  - genererating unique id </br>
+	Zend/Diactors - getting request, forming response </br>
+	Aura/Routing - http mapping </br>
+3. Patterns & nearby things: </br>
+	DTO </br>
+	Named Constructors </br>
+	Data Hinting </br>
 
 
-Things learned about & taken for studying:
+Things learned about & taken for studying: </br>
 
-	1. OOP
-	2. SOLID
-	3. REST
-	4. LIFT
-	5. CRUD
-	6. MVC
+1. OOP </br>
+2. SOLID </br>
+3. REST </br>
+4. LIFT </br>
+5. CRUD </br>
+6. MVC </br>
