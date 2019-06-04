@@ -4,12 +4,14 @@ namespace App\Connect;
 
 class Config
 {
+	private function __construct(){}
+
 	public static function init()
 	{
-		return new self;
+		return new self();
 	}
 
-	private static function parseConfigFile() : Array
+	private function parseConfigFile() : Array
 	{
 		$params = parse_ini_file('db_config.ini');
 
@@ -22,7 +24,7 @@ class Config
 
 	public function getConnectionString() : String
 	{
-		$params = self::parseConfigFile();
+		$params = $this->parseConfigFile();
 		
 		$connectionString = sprintf("pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s", 
 				$params['host'], 
@@ -36,8 +38,7 @@ class Config
 
 	public function getOptions() : Array
 	{
-		$params = self::parseConfigFile();
-
+		$params = $this->parseConfigFile();
 		return $params['opt'];
 	}
 }
