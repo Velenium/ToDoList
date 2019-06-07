@@ -9,7 +9,7 @@ Things used:
 	Composer </br>
 2. Libraries: </br>
 	Ramsey/Uuid  - genererating unique id </br>
-	Zend/Diactors - getting request, forming response </br>
+	Zend/Diactors - forming request & response </br>
 	Aura/Routing - http mapping </br>
 3. Patterns & nearby things: </br>
 	DTO </br>
