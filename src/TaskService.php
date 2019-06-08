@@ -4,15 +4,11 @@ namespace App;
 
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
+use App\Validation\Validator;
+use App\ResultConst;
 use App\Task;
 use App\TaskData;
 use App\TaskRepository;
-use App\Validation\ValidateCreation;
-use App\Validation\ValidateDeletion;
-use App\Validation\ValidateBodyUpdate;
-use App\Validation\ValidateStatusUpdate;
-use App\Validation\ValidateTaskData;
-use App\Validation\ValidateToDo;
 use App\ServiceResult;
 
 class TaskService
@@ -24,124 +20,173 @@ class TaskService
 	{
 		$this->repository = new TaskRepository();
 		$this->serviceResult = new ServiceResult();
+		$this->validator = new Validator();
 	}
 
-	public function createNewTask(String $name, String $body) : ServiceResult
+	public function createNewTask($name, $body) : ServiceResult
 	{
+		$errors = $this->validator->validateNewData($name, $body);
+		if (!empty($errors)) {
+			$this->serviceResult->setBody($errors);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
+		}
+
 		$id = Uuid::uuid4();
 		$status = 'new';
-		$task = Task::createNewTask($name, $id, $body, $status);
+		$task = Task::createNewTask([], $name, $id, $body, $status);
 		$taskData = $task->getTaskData();
-
-		$validator = ValidateCreation::init();
-		$error = $validator->validateDTO($taskData);
-
-		if ($error === 'not found') {
-			$this->repository->create($taskData);
-			$this->serviceResult->setResponseBody($taskData->id);
-		} else {
-			$this->serviceResult->setResponseBody($error);
-			$this->serviceResult->setResponseStatusError();
-		}
+		$this->repository->create($taskData);
+		$this->serviceResult->setBody(ResultConst::Result['001']);
 
 		return $this->serviceResult;
 	}
 
-	public function taskBodyUpdate(Uuid $id, String $newBody) : ServiceResult
+	public function taskBodyUpdate($id, $newBody) : ServiceResult
 	{
-		$givenTaskData = $this->repository->find($id);
-		$task = Task::createFromDTO($givenTaskData);
+		$errors = $this->validator->validateUpdateData($id, $newBody);
+		if (!empty($errors)) {
+			$this->serviceResult->setBody($errors);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
+		}
+		
+		$id = Uuid::FromString($id);
+		$givenData = $this->repository->find($id);
+		if (empty($givenData)) {
+			$this->serviceResult->setBody(ResultConst::Repository['201']);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
+		}
+
+		$task = Task::createNewTask(
+			[], $givenData['name'], Uuid::FromString($givenData['id']),
+			$givenData['body'], $givenData['status']
+		);
 		$task->taskBodyUpdate($newBody);
 		$taskData = $task->getTaskData();
 
-		$validator = ValidateBodyUpdate::init();
-		$error = $validator->validateDTO($taskData);
-
-		if ($error === 'not found') {
-			$this->repository->update($taskData);
-			$this->serviceResult->setResponseBody('Body updated!');
-		} else {
-			$this->serviceResult->setResponseBody($error);
-			$this->serviceResult->setResponseStatusError();
+		$errors = $taskData->errors;
+		if (!empty($errors)) {
+			$this->serviceResult->setBody($errors);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
 		}
+
+		$this->repository->update($taskData);
+		$this->serviceResult->setBody(ResultConst::Result['002']);
 
 		return $this->serviceResult;
 	}
 
-		public function taskStatusUpdate(Uuid $id, String $newStatus) : ServiceResult
+	public function taskStatusUpdate($id, $newStatus) : ServiceResult
 	{
-		$givenTaskData = $this->repository->find($id);
-		$task = Task::createFromDTO($givenTaskData);
-		$oldStatus = $task->getTaskData()->status;
+		$errors = $this->validator->validateUpdateData($id, $newStatus);
+		if (!empty($errors)) {
+			$this->serviceResult->setBody($errors);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
+		}
 
-		$validator = ValidateStatusUpdate::init();
-		$validator->validateNewStatus($newStatus, $oldStatus);
+		$id = Uuid::FromString($id);
+		$givenData = $this->repository->find($id);
+		if (empty($givenData)) {
+			$this->serviceResult->setBody(ResultConst::Repository['201']);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
+		}
+
+		$task = Task::createNewTask(
+			[], $givenData['name'], Uuid::FromString($givenData['id']),
+			$givenData['body'], $givenData['status']
+		);
 		$task->taskStatusUpdate($newStatus);
 		$taskData = $task->getTaskData();
-		$error = $validator->validateDTO($taskData);
-
-		if ($error === 'not found') {
-			$this->repository->update($taskData);
-			$this->serviceResult->setResponseBody('Status updated!');
-		} else {
-			$this->serviceResult->setResponseBody($error);
-			$this->serviceResult->setResponseStatusError();
+		$errors = $taskData->errors;
+		if (!empty($errors)) {
+			$this->serviceResult->setBody($errors);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
 		}
+
+		$this->repository->update($taskData);
+		$this->serviceResult->setBody(ResultConst::Result['003']);
 
 		return $this->serviceResult;
 	}
 
-	public function taskDelete(Uuid $id) : ServiceResult
+	public function taskDelete($id) : ServiceResult
 	{
-		$givenTaskData = $this->repository->find($id);
-		$task = Task::createFromDTO($givenTaskData);
-		$taskData = $task->getTaskData();
-
-		$validator = ValidateTaskData::init();
-		$error = $validator->validateDTO($taskData);
-
-		if ($error === 'not found') {
-			$this->repository->delete($taskData);
-			$this->serviceResult->setResponseBody('Task Deleted!');
-		} else {
-			$this->serviceResult->setResponseBody($error);
-			$this->serviceResult->setResponseStatusError();
+		$errors = $this->validator->validateID($id);
+		if (!empty($errors)) {
+			$this->serviceResult->setBody($errors);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
 		}
+
+		$id = Uuid::FromString($id);
+		$givenData = $this->repository->find($id);
+		if (empty($givenData)) {
+			$this->serviceResult->setBody(ResultConst::Repository['201']);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
+		}
+
+		$task = Task::createNewTask(
+			[], $givenData['name'], Uuid::FromString($givenData['id']),
+			$givenData['body'], $givenData['status']
+		);
+		$taskData = $task->getTaskData();
+		$errors = $taskData->errors;
+		if (!empty($errors)) {
+			$this->serviceResult->setBody($errors);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
+		}
+
+		$this->repository->delete($taskData);
+		$this->serviceResult->setBody(ResultConst::Result['004']);
 
 		return $this->serviceResult;
 	}
 
-	public function show(Uuid $id) : ServiceResult
+	public function show($id) : ServiceResult
 	{
-		$givenTaskData = $this->repository->find($id);
-		$task = Task::createFromDTO($givenTaskData);
-		$taskData = $task->getTaskData();
-
-		$validator = ValidateTaskData::init();
-		$error = $validator->validateDTO($taskData);
-
-		if ($error === 'not found') {
-			$this->serviceResult->setResponseBody($taskData);
-		} else {
-			$this->serviceResult->setResponseBody($error);
-			$this->serviceResult->setResponseStatusError();
+		$errors = $this->validator->validateID($id);
+		if (!empty($errors)) {
+			$this->serviceResult->setBody($errors);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
 		}
+
+		$id = Uuid::FromString($id);
+		$givenData = $this->repository->find($id);
+		if (empty($givenData)) {
+			$this->serviceResult->setBody(ResultConst::Repository['201']);
+			$this->serviceResult->setErrorStatus();
+			return $this->serviceResult;
+		}
+
+		$result['result'] = $givenData;
+		$result['code'] = 200;
+
+		$this->serviceResult->setBody($result);
 
 		return $this->serviceResult;
 	}
 
 	public function showAll() : ServiceResult
 	{
-		$result = $this->repository->findAll();
-		$validator = ValidateToDo::init();
-		$error = $validator->validateTable($result);
-
-		if ($error === 'not found') {
-			$this->serviceResult->setResponseBody($result);
-		} else {
-			$this->serviceResult->setResponseBody($error);
-			$this->serviceResult->setResponseStatusError();
+		$givenData = $this->repository->findAll();
+		if (empty($givenData)) {
+			$this->serviceResult->setBody(ResultConst::Result['005']);
+			return $this->serviceResult;
 		}
+
+		$result['result'] = $givenData;
+		$result['code'] = 200;
+
+		$this->serviceResult->setBody($result);
 
 		return $this->serviceResult;
 	}
