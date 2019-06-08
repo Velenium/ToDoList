@@ -4,12 +4,19 @@ namespace App;
 
 use Ramsey\Uuid\Uuid;
 use App\TaskData;
-use App\ResultConst;
 
 class Task
 {
-	public const MINLENGTH = 3;
-	public const POSSIBLESTATUS = ['in progress', 'completed', 'canceled'];
+	private const MinLength = 3;
+	private const PossibleStatus = ['in progress', 'completed', 'canceled'];
+
+	public const Error = [
+		'301' => ['error' => 'Minimum name length is 3', 'code' => 411],
+		'302' => ['error' => 'Minimum body length is 3', 'code' => 411],
+		'303' => ['error' => 'Task Already Completed', 'code' => 409],
+		'304' => ['error' => 'Task Already Canceled', 'code' => 409],
+		'305' => ['error' => 'Expected status: in progress/completed/canceled', 'code' => 406]
+	];
 
 	private $errors;
 	private $name;
@@ -39,12 +46,12 @@ class Task
 
 	public function taskBodyUpdate(String $newBody)
 	{
-		if (strlen($newBody) < self::MINLENGTH) {
-			$this->errors = ResultConst::Task['302'];
+		if (strlen($newBody) < self::MinLength) {
+			$this->errors = self::Error['302'];
 		} elseif ($this->status === 'completed') {
-			$this->errors = ResultConst::Task['303'];
+			$this->errors = self::Error['303'];
 		} elseif ($this->status === 'canceled') {
-			$this->errors = ResultConst::Task['304'];
+			$this->errors = self::Error['304'];
 		}
 
 		if (empty($this->errors)) {
@@ -54,17 +61,17 @@ class Task
 
 	public function taskStatusUpdate(String $newStatus)
 	{
-		if (!in_array($newStatus, self::POSSIBLESTATUS)) 
+		if (!in_array($newStatus, self::PossibleStatus)) 
 		{
-			$this->errors = ResultConst::Task['305'];
+			$this->errors = self::Error['305'];
 		} 
 		if ($this->status === 'completed' && $newStatus === 'canceled') 
 		{
-			$this->errors = ResultConst::Task['303'];
+			$this->errors = self::Error['303'];
 		} 
 		if ($this->status === 'canceled' && $newStatus === 'completed') 
 		{
-			$this->errors = ResultConst::Task['304'];
+			$this->errors = self::Error['304'];
 		}
 		if (empty($this->errors)) {
 			$this->status = $newStatus;
