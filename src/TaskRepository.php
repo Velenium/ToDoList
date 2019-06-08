@@ -16,27 +16,23 @@ class TaskRepository
 		$this->pdo = Connect::connect();
 	}
 
-	public function find($id) : TaskData
+	public function find(Uuid $id) : Array
 	{
+		$stringID = $id->toString();
 		$stmt = $this->pdo->prepare('SELECT * FROM todo WHERE (id = :id)');
-		$stmt->execute([':id' => $id]);
-		$data = $stmt->fetch(\PDO::FETCH_ASSOC);
-		$taskData = new TaskData(
-			$data['name'],
-			Uuid::FromString($data['id']),
-			$data['body'],
-			$data['status']);
+		$stmt->execute([':id' => $stringID]);
+		$givenData = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-		return $taskData;
+		return $givenData === false ? [] : $givenData;
 	}
 
 	public function findAll() : Array
 	{
 		$stmt = $this->pdo->prepare('SELECT * FROM todo');
 		$stmt->execute();
-		$taskDataAll = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+		$dataAll = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-		return $taskDataAll;
+		return $dataAll;
 	}
 
 	public function create(TaskData $taskData)
@@ -50,7 +46,7 @@ class TaskRepository
 		]);
 	}
 
-	public function update($taskData)
+	public function update(TaskData $taskData)
 	{
 		$stmt = $this->pdo->prepare('UPDATE todo SET name = :name, body = :body, status = :status 
 			WHERE (id = :id)');
@@ -61,7 +57,7 @@ class TaskRepository
 		]);
 	}
 
-	public function delete($taskData)
+	public function delete(TaskData $taskData)
 	{
 		$stmt = $this->pdo->prepare("DELETE FROM todo WHERE id = :id");
 		$stmt->execute([':id' => $taskData->id->toString()]);
