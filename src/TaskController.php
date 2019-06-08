@@ -17,6 +17,24 @@ class TaskController
 		$this->service = new TaskService();
 	}
 
+	private function formResponse(ServiceResult $serviceResult) : Response
+	{
+		$status = $serviceResult->getStatus();
+		$body = $serviceResult->getBody();
+
+		$response = new Response();
+
+		if ($status) {
+			$response->getBody()->write(json_encode($body['result']));
+			$response = $response->withStatus($body['code']);
+		} else {
+			$response->getBody()->write(json_encode($body['error']));
+			$response = $response->withStatus($body['code']);
+		}
+
+		return $response;
+	}
+
 	public function createNewTask(ServerRequest $request) : Response
 	{
 		$name = $request->getQueryParams()['name'];
@@ -30,7 +48,7 @@ class TaskController
 
 	public function taskBodyUpdate(ServerRequest $request) : Response
 	{
-		$id = Uuid::FromString($request->getAttribute('id'));
+		$id = $request->getAttribute('id');
 		$newBody = $request->getQueryParams()['body'];
 
 		$result = $this->service->taskBodyUpdate($id, $newBody);
@@ -41,7 +59,7 @@ class TaskController
 
 	public function taskStatusUpdate(ServerRequest $request) : Response
 	{
-		$id = Uuid::FromString($request->getAttribute('id'));
+		$id = $request->getAttribute('id');
 		$newStatus = $request->getQueryParams()['status'];
 
 		$result = $this->service->taskStatusUpdate($id, $newStatus);
@@ -52,7 +70,7 @@ class TaskController
 
 	public function taskDelete(ServerRequest $request) : Response
 	{
-		$id = Uuid::FromString($request->getAttribute('id'));
+		$id = $request->getAttribute('id');
 
 		$result = $this->service->taskDelete($id);
 		$response = $this->formResponse($result);
@@ -62,7 +80,7 @@ class TaskController
 
 	public function show(ServerRequest $request) : Response
 	{
-		$id = Uuid::FromString($request->getAttribute('id'));
+		$id = $request->getAttribute('id');
 
 		$result = $this->service->show($id);
 		$response = $this->formResponse($result);
@@ -74,19 +92,6 @@ class TaskController
 	{
 		$result = $this->service->showAll();
 		$response = $this->formResponse($result);
-
-		return $response;
-	}
-
-	public function formResponse(ServiceResult $serviceResult) : Response
-	{
-		$status = $serviceResult->getStatus();
-		$body = $serviceResult->getBody();
-
-		$response = new Response();
-
-		$response->getBody()->write(json_encode($body));
-		$response = $response->withStatus($status);
 
 		return $response;
 	}
