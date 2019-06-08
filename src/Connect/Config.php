@@ -4,41 +4,36 @@ namespace App\Connect;
 
 class Config
 {
-	private function __construct(){}
+	private $params;
+
+	private function __construct()
+	{
+		$this->params = parse_ini_file('db_config.ini');
+
+		if ($this->params === false) {
+			throw new \Exception("Error reading database configuration file");
+		}
+	}
 
 	public static function init()
 	{
 		return new self();
 	}
 
-	private function parseConfigFile() : Array
-	{
-		$params = parse_ini_file('db_config.ini');
-
-		if ($params === false) {
-			throw new \Exception("Error reading database configuration file");
-		}
-
-		return $params;
-	}
-
 	public function getConnectionString() : String
-	{
-		$params = $this->parseConfigFile();
-		
+	{	
 		$connectionString = sprintf("pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s", 
-				$params['host'], 
-				$params['port'], 
-				$params['database'], 
-				$params['user'], 
-				$params['password']);
+				$this->params['host'], 
+				$this->params['port'], 
+				$this->params['database'], 
+				$this->params['user'], 
+				$this->params['password']);
 
 		return $connectionString;
 	}
 
 	public function getOptions() : Array
 	{
-		$params = $this->parseConfigFile();
-		return $params['opt'];
+		return $this->params['opt'];
 	}
 }
