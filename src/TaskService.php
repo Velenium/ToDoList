@@ -5,7 +5,6 @@ namespace App;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response;
 use App\Validation\Validator;
-use App\ResultConst;
 use App\Task;
 use App\TaskData;
 use App\TaskRepository;
@@ -15,6 +14,15 @@ class TaskService
 {
 	private $repository;
 	private $serviceResult;
+
+	private const Result = [
+		'001' => ['result' => 'Task Created!', 'code' => 200],
+		'002' => ['result' => 'Body Updated!', 'code' => 200],
+		'003' => ['result' => 'Status Updated!', 'code' => 200],
+		'004' => ['result' => 'Task Deleted!', 'code' => 200],
+		'005' => ['result' => 'Nothing to do!', 'code' => 204],
+		'006' => ['error' => 'Task not found', 'code' => 404]
+	];
 
 	public function __construct()
 	{
@@ -37,7 +45,7 @@ class TaskService
 		$task = Task::createNewTask([], $name, $id, $body, $status);
 		$taskData = $task->getTaskData();
 		$this->repository->create($taskData);
-		$this->serviceResult->setBody(ResultConst::Result['001']);
+		$this->serviceResult->setBody(self::Result['001']);
 
 		return $this->serviceResult;
 	}
@@ -54,7 +62,7 @@ class TaskService
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->setBody(ResultConst::Repository['201']);
+			$this->serviceResult->setBody(self::Result['006']);
 			$this->serviceResult->setErrorStatus();
 			return $this->serviceResult;
 		}
@@ -74,7 +82,7 @@ class TaskService
 		}
 
 		$this->repository->update($taskData);
-		$this->serviceResult->setBody(ResultConst::Result['002']);
+		$this->serviceResult->setBody(self::Result['002']);
 
 		return $this->serviceResult;
 	}
@@ -91,7 +99,7 @@ class TaskService
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->setBody(ResultConst::Repository['201']);
+			$this->serviceResult->setBody(self::Result['006']);
 			$this->serviceResult->setErrorStatus();
 			return $this->serviceResult;
 		}
@@ -110,7 +118,7 @@ class TaskService
 		}
 
 		$this->repository->update($taskData);
-		$this->serviceResult->setBody(ResultConst::Result['003']);
+		$this->serviceResult->setBody(self::Result['003']);
 
 		return $this->serviceResult;
 	}
@@ -127,7 +135,7 @@ class TaskService
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->setBody(ResultConst::Repository['201']);
+			$this->serviceResult->setBody(self::Result['006']);
 			$this->serviceResult->setErrorStatus();
 			return $this->serviceResult;
 		}
@@ -145,7 +153,7 @@ class TaskService
 		}
 
 		$this->repository->delete($taskData);
-		$this->serviceResult->setBody(ResultConst::Result['004']);
+		$this->serviceResult->setBody(self::Result['004']);
 
 		return $this->serviceResult;
 	}
@@ -162,7 +170,7 @@ class TaskService
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->setBody(ResultConst::Repository['201']);
+			$this->serviceResult->setBody(self::Result['006']);
 			$this->serviceResult->setErrorStatus();
 			return $this->serviceResult;
 		}
@@ -179,7 +187,7 @@ class TaskService
 	{
 		$givenData = $this->repository->findAll();
 		if (empty($givenData)) {
-			$this->serviceResult->setBody(ResultConst::Result['005']);
+			$this->serviceResult->setBody(self::Result['005']);
 			return $this->serviceResult;
 		}
 
