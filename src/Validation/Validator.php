@@ -13,11 +13,11 @@ class Validator
 		if (!is_string($name)) {
 			$this->errors = ResultConst::Validator['101'];
 		} elseif (strlen($name) < 3) {
-			$this->errors = ResultConst::Task['301']; //ЭТО ВЕДЬ НЕ ЗАДАЧА ВАЛИДАТОРА
+			$this->errors = ResultConst::Task['301'];
 		} elseif (!is_string($body)) {
 			$this->errors = ResultConst::Validator['102'];
 		} elseif (strlen($body) < 3) {
-			$this->errors = ResultConst::Task['302']; //ЭТО ВЕДЬ ТОЖЕ НЕ ЗАДАЧА ВАЛИДАТОРА
+			$this->errors = ResultConst::Task['302'];
 		}
 		
 		return $this->errors === null ? [] : $this->errors;
