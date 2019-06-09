@@ -7,8 +7,12 @@ use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
 use App\TaskController;
+use App\Connect\Config;
+use App\DependencyContainer;
 
-$controller = new TaskController();
+$config = Config::init();
+$di = new DependencyContainer($config);
+$controller = $di->getTaskController();
 
 $request = ServerRequestFactory::fromGlobals(
 	$_SERVER,

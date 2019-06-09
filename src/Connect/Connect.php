@@ -6,11 +6,15 @@ use App\Connect\Config;
 
 class Connect
 {
-	public function connect() : \PDO
+	private $connect;
+
+	public function __construct(string $connectString, array $options)
+	{	
+		$this->connect = new \PDO($connectString, null, null, $options);
+	}
+
+	public function getConnection() : \PDO
 	{
-		$config = Config::init();
-		$connectionString = $config->getConnectionString();
-		$options = $config->getOptions();
-		return new \PDO($connectionString, null, null, $options);
+		return $this->connect;
 	}
 }

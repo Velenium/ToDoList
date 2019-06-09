@@ -11,9 +11,9 @@ class TaskRepository
 {
 	private $pdo;
 
-	public function __construct()
+	public function __construct(\PDO $connect)
 	{
-		$this->pdo = Connect::connect();
+		$this->pdo = $connect;
 	}
 
 	public function find(Uuid $id) : array

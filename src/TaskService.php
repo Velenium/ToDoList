@@ -14,6 +14,7 @@ class TaskService
 {
 	private $repository;
 	private $serviceResult;
+	private $validator;
 
 	private const Result = [
 		'Created' => ['body' => 'Task Created!', 'status' => 'OK'],
@@ -24,11 +25,11 @@ class TaskService
 		'Not Found' => ['body' => 'Task Not Found', 'status' => 'Not Found']
 	];
 
-	public function __construct()
+	public function __construct(TaskRepository $repository, Validator $validator, ServiceResult $serviceResult)
 	{
-		$this->repository = new TaskRepository();
-		$this->serviceResult = new ServiceResult();
-		$this->validator = new Validator();
+		$this->repository = $repository;
+		$this->serviceResult = $serviceResult;
+		$this->validator = $validator;
 	}
 
 	public function createNewTask($name, $body) : ServiceResult

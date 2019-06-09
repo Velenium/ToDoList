@@ -21,9 +21,9 @@ class TaskController
 		'Length Required' => 411
 	];
 
-	public function __construct()
+	public function __construct(TaskService $service)
 	{
-		$this->service = new TaskService();
+		$this->service = $service;
 	}
 
 	private function formResponse(ServiceResult $serviceResult) : Response
