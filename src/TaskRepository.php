@@ -16,7 +16,7 @@ class TaskRepository
 		$this->pdo = Connect::connect();
 	}
 
-	public function find(Uuid $id) : Array
+	public function find(Uuid $id) : array
 	{
 		$stringID = $id->toString();
 		$stmt = $this->pdo->prepare('SELECT * FROM todo WHERE (id = :id)');
@@ -26,7 +26,7 @@ class TaskRepository
 		return $givenData === false ? [] : $givenData;
 	}
 
-	public function findAll() : Array
+	public function findAll() : array
 	{
 		$stmt = $this->pdo->prepare('SELECT * FROM todo');
 		$stmt->execute();
