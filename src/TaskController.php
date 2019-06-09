@@ -12,6 +12,15 @@ class TaskController
 {
 	private $service;
 
+	private const ResponseCode = [
+		'OK' => 200,
+		'Bad Request' => 400,
+		'Not Found' => 404,
+		'Not Acceptable' => 406,
+		'Conflict' => 409,
+		'Length Required' => 411
+	];
+
 	public function __construct()
 	{
 		$this->service = new TaskService();
@@ -19,18 +28,15 @@ class TaskController
 
 	private function formResponse(ServiceResult $serviceResult) : Response
 	{
-		$status = $serviceResult->getStatus();
+		$resultStatus = $serviceResult->getStatus();
+		
+		$status = self::ResponseCode[$resultStatus];
 		$body = $serviceResult->getBody();
 
 		$response = new Response();
 
-		if ($status) {
-			$response->getBody()->write(json_encode($body['result']));
-			$response = $response->withStatus($body['code']);
-		} else {
-			$response->getBody()->write(json_encode($body['error']));
-			$response = $response->withStatus($body['code']);
-		}
+		$response->getBody()->write($body);
+		$response = $response->withStatus($status);
 
 		return $response;
 	}
