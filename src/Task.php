@@ -24,9 +24,9 @@ class Task
 	private $status;
 
 	private function __construct(
-		Array $errors,
-		String $name = null, Uuid $id  = null,
-		String $body = null, String $status = null)
+		array $errors,
+		string $name = null, Uuid $id  = null,
+		string $body = null, string $status = null)
 	{
 		$this->errors = $errors;
 		$this->name = $name;
@@ -36,21 +36,21 @@ class Task
 	}
 
 	public static function createNewTask(
-		Array $errors,
-		String $name = null, Uuid $id  = null,
-		String $body = null, String $status = null) : self
+		array $errors,
+		string $name = null, Uuid $id  = null,
+		string $body = null, string $status = null) : self
 	{
 		return new self([], $name, $id, $body, $status);
 	}
 
-	public function taskBodyUpdate(String $newBody)
+	public function taskBodyUpdate(string $newBody)
 	{
-		if (strlen($newBody) < self::MinLength) {
-			$this->errors = self::Error['Body Length'];
-		} elseif ($this->status === 'completed') {
+		 if ($this->status === 'completed') {
 			$this->errors = self::Error['Completed'];
 		} elseif ($this->status === 'canceled') {
 			$this->errors = self::Error['Canceled'];
+		} elseif (strlen($newBody) < self::MinLength) {
+			$this->errors = self::Error['Body Length'];
 		}
 
 		if (empty($this->errors)) {
@@ -58,7 +58,7 @@ class Task
 		}
 	}
 
-	public function taskStatusUpdate(String $newStatus)
+	public function taskStatusUpdate(string $newStatus)
 	{
 		if (!in_array($newStatus, self::PossibleStatus)) 
 		{
