@@ -5,14 +5,14 @@ Server->Router->Controller->Service(->Entity)->Repository->DataBase
 
 Things used:
 
-1. Software:
+1. Software: </br>
 	Git </br>
 	Composer </br>
-2. Libraries:
+2. Libraries: </br>
 	Ramsey/Uuid  - genererating unique id </br>
 	Zend/Diactors - forming request & response </br>
 	Aura/Routing - http mapping </br>
-3. Patterns & nearby things:
+3. Patterns & nearby things: </br>
 	Data Transfer Object </br>
 	Named Constructors </br>
 	Data Hinting </br>
