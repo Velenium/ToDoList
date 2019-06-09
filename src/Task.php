@@ -11,11 +11,10 @@ class Task
 	private const PossibleStatus = ['in progress', 'completed', 'canceled'];
 
 	private const Error = [
-		'301' => ['error' => 'Minimum name length is 3', 'code' => 411],
-		'302' => ['error' => 'Minimum body length is 3', 'code' => 411],
-		'303' => ['error' => 'Task Already Completed', 'code' => 409],
-		'304' => ['error' => 'Task Already Canceled', 'code' => 409],
-		'305' => ['error' => 'Expected status: in progress/completed/canceled', 'code' => 406]
+		'Body Length' => ['body' => 'Minimum body length is 3', 'status' => 'Length Required'],
+		'Completed' => ['body' => 'Task Already Completed', 'status' => 'Conflict'],
+		'Canceled' => ['body' => 'Task Already Canceled', 'status' => 'Conflict'],
+		'Expected' => ['body' => 'Expected status: in progress/completed/canceled', 'status' => 'Not Acceptable']
 	];
 
 	private $errors;
@@ -47,11 +46,11 @@ class Task
 	public function taskBodyUpdate(String $newBody)
 	{
 		if (strlen($newBody) < self::MinLength) {
-			$this->errors = self::Error['302'];
+			$this->errors = self::Error['Body Length'];
 		} elseif ($this->status === 'completed') {
-			$this->errors = self::Error['303'];
+			$this->errors = self::Error['Completed'];
 		} elseif ($this->status === 'canceled') {
-			$this->errors = self::Error['304'];
+			$this->errors = self::Error['Canceled'];
 		}
 
 		if (empty($this->errors)) {
@@ -63,15 +62,15 @@ class Task
 	{
 		if (!in_array($newStatus, self::PossibleStatus)) 
 		{
-			$this->errors = self::Error['305'];
+			$this->errors = self::Error['Expected'];
 		} 
 		if ($this->status === 'completed' && $newStatus === 'canceled') 
 		{
-			$this->errors = self::Error['303'];
+			$this->errors = self::Error['Completed'];
 		} 
 		if ($this->status === 'canceled' && $newStatus === 'completed') 
 		{
-			$this->errors = self::Error['304'];
+			$this->errors = self::Error['Canceled'];
 		}
 		if (empty($this->errors)) {
 			$this->status = $newStatus;
