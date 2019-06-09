@@ -16,12 +16,12 @@ class TaskService
 	private $serviceResult;
 
 	private const Result = [
-		'001' => ['result' => 'Task Created!', 'code' => 200],
-		'002' => ['result' => 'Body Updated!', 'code' => 200],
-		'003' => ['result' => 'Status Updated!', 'code' => 200],
-		'004' => ['result' => 'Task Deleted!', 'code' => 200],
-		'005' => ['result' => 'Nothing to do!', 'code' => 204],
-		'006' => ['error' => 'Task not found', 'code' => 404]
+		'Created' => ['body' => 'Task Created!', 'status' => 'OK'],
+		'Body Updated' => ['body' => 'Body Updated!', 'status' => 'OK'],
+		'Status Updated' => ['body' => 'Status Updated!', 'status' => 'OK'],
+		'Deleted' => ['body' => 'Task Deleted!', 'status' => 'OK'],
+		'Empty' => ['body' => 'Nothing to do!', 'status' => 'OK'],
+		'Not Found' => ['body' => 'Task Not Found', 'status' => 'Not Found']
 	];
 
 	public function __construct()
@@ -35,8 +35,7 @@ class TaskService
 	{
 		$errors = $this->validator->validateNewData($name, $body);
 		if (!empty($errors)) {
-			$this->serviceResult->setBody($errors);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult($errors);
 			return $this->serviceResult;
 		}
 
@@ -45,7 +44,7 @@ class TaskService
 		$task = Task::createNewTask([], $name, $id, $body, $status);
 		$taskData = $task->getTaskData();
 		$this->repository->create($taskData);
-		$this->serviceResult->setBody(self::Result['001']);
+		$this->serviceResult->formResult(self::Result['Created']);
 
 		return $this->serviceResult;
 	}
@@ -54,16 +53,14 @@ class TaskService
 	{
 		$errors = $this->validator->validateUpdateData($id, $newBody);
 		if (!empty($errors)) {
-			$this->serviceResult->setBody($errors);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult($errors);
 			return $this->serviceResult;
 		}
 		
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->setBody(self::Result['006']);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult(self::Result['Not Found']);
 			return $this->serviceResult;
 		}
 
@@ -76,13 +73,12 @@ class TaskService
 
 		$errors = $taskData->errors;
 		if (!empty($errors)) {
-			$this->serviceResult->setBody($errors);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult($errors);
 			return $this->serviceResult;
 		}
 
 		$this->repository->update($taskData);
-		$this->serviceResult->setBody(self::Result['002']);
+		$this->serviceResult->formResult(self::Result['Body Updated']);
 
 		return $this->serviceResult;
 	}
@@ -91,16 +87,14 @@ class TaskService
 	{
 		$errors = $this->validator->validateUpdateData($id, $newStatus);
 		if (!empty($errors)) {
-			$this->serviceResult->setBody($errors);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult($errors);
 			return $this->serviceResult;
 		}
 
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->setBody(self::Result['006']);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult(self::Result['Not Found']);
 			return $this->serviceResult;
 		}
 
@@ -112,13 +106,12 @@ class TaskService
 		$taskData = $task->getTaskData();
 		$errors = $taskData->errors;
 		if (!empty($errors)) {
-			$this->serviceResult->setBody($errors);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult($errors);
 			return $this->serviceResult;
 		}
 
 		$this->repository->update($taskData);
-		$this->serviceResult->setBody(self::Result['003']);
+		$this->serviceResult->formResult(self::Result['Status Updated']);
 
 		return $this->serviceResult;
 	}
@@ -127,16 +120,14 @@ class TaskService
 	{
 		$errors = $this->validator->validateID($id);
 		if (!empty($errors)) {
-			$this->serviceResult->setBody($errors);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult($errors);
 			return $this->serviceResult;
 		}
 
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->setBody(self::Result['006']);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult(self::Result['Not Found']);
 			return $this->serviceResult;
 		}
 
@@ -147,13 +138,12 @@ class TaskService
 		$taskData = $task->getTaskData();
 		$errors = $taskData->errors;
 		if (!empty($errors)) {
-			$this->serviceResult->setBody($errors);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult($errors);
 			return $this->serviceResult;
 		}
 
 		$this->repository->delete($taskData);
-		$this->serviceResult->setBody(self::Result['004']);
+		$this->serviceResult->formResult(self::Result['Deleted']);
 
 		return $this->serviceResult;
 	}
@@ -162,23 +152,21 @@ class TaskService
 	{
 		$errors = $this->validator->validateID($id);
 		if (!empty($errors)) {
-			$this->serviceResult->setBody($errors);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult($errors);
 			return $this->serviceResult;
 		}
 
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->setBody(self::Result['006']);
-			$this->serviceResult->setErrorStatus();
+			$this->serviceResult->formResult(self::Result['Not Found']);
 			return $this->serviceResult;
 		}
 
-		$result['result'] = $givenData;
-		$result['code'] = 200;
+		$result['body'] = $givenData;
+		$result['status'] = 'OK';
 
-		$this->serviceResult->setBody($result);
+		$this->serviceResult->formResult($result);
 
 		return $this->serviceResult;
 	}
@@ -187,14 +175,14 @@ class TaskService
 	{
 		$givenData = $this->repository->findAll();
 		if (empty($givenData)) {
-			$this->serviceResult->setBody(self::Result['005']);
+			$this->serviceResult->formResult(self::Result['Empty']);
 			return $this->serviceResult;
 		}
 
-		$result['result'] = $givenData;
-		$result['code'] = 200;
+		$result['body'] = $givenData;
+		$result['status'] = 'OK';
 
-		$this->serviceResult->setBody($result);
+		$this->serviceResult->formResult($result);
 
 		return $this->serviceResult;
 	}
