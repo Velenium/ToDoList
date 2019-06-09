@@ -7,28 +7,19 @@ class ServiceResult
 	private $body;
 	private $status;
 
-	public function __construct()
-	{
-		$this->status = true;
-	}
-
-	public function getBody()
+	public function getBody() : string
 	{
 		return $this->body;
 	}
 
-	public function getStatus() : Bool
+	public function getStatus() : string
 	{
 		return $this->status;
 	}
 
-	public function setBody(Array $body)
+	public function formResult(array $result)
 	{
-		$this->body = $body;
-	}
-
-	public function setErrorStatus()
-	{
-		$this->status = false;
+		$this->status = $result['status'];
+		$this->body = json_encode($result['body']);
 	}
 }
