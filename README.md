@@ -6,17 +6,17 @@ Server->Router->Controller->Service(->Entity)->Repository->DataBase
 Things used:
 
 1. Software:
-	Git
-	Composer
+	Git </br>
+	Composer </br>
 2. Libraries:
-	Ramsey/Uuid  - genererating unique id
-	Zend/Diactors - forming request & response
-	Aura/Routing - http mapping
+	Ramsey/Uuid  - genererating unique id </br>
+	Zend/Diactors - forming request & response </br>
+	Aura/Routing - http mapping </br>
 3. Patterns & nearby things:
-	Data Transfer Object
-	Named Constructors
-	Data Hinting
-	Dependency Injection
+	Data Transfer Object </br>
+	Named Constructors </br>
+	Data Hinting </br>
+	Dependency Injection </br>
 
 
 Things learned about & taken for studying:
