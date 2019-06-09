@@ -20,7 +20,7 @@ class Config
 		return new self();
 	}
 
-	public function getConnectionString() : String
+	public function getConnectionString() : string
 	{	
 		$connectionString = sprintf("pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s", 
 				$this->params['host'], 
@@ -32,7 +32,7 @@ class Config
 		return $connectionString;
 	}
 
-	public function getOptions() : Array
+	public function getOptions() : array
 	{
 		return $this->params['opt'];
 	}
