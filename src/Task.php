@@ -11,10 +11,11 @@ class Task
 	private const PossibleStatus = ['in progress', 'completed', 'canceled'];
 
 	public const Error = [
-		'Body Length' => ['body' => 'Minimum body length is 3', 'status' => 'Length Required'],
-		'Completed' => ['body' => 'Task Already Completed', 'status' => 'Conflict'],
-		'Canceled' => ['body' => 'Task Already Canceled', 'status' => 'Conflict'],
-		'Expected' => ['body' => 'Expected Status: in progress/completed/canceled', 'status' => 'Not Acceptable']
+		'301' => ['error' => 'Minimum name length is 3', 'code' => 411],
+		'302' => ['error' => 'Minimum body length is 3', 'code' => 411],
+		'303' => ['error' => 'Task Already Completed', 'code' => 409],
+		'304' => ['error' => 'Task Already Canceled', 'code' => 409],
+		'305' => ['error' => 'Expected status: in progress/completed/canceled', 'code' => 406]
 	];
 
 	private $errors;
@@ -24,9 +25,9 @@ class Task
 	private $status;
 
 	private function __construct(
-		array $errors,
-		string $name = null, Uuid $id  = null,
-		string $body = null, string $status = null)
+		Array $errors,
+		String $name = null, Uuid $id  = null,
+		String $body = null, String $status = null)
 	{
 		$this->errors = $errors;
 		$this->name = $name;
@@ -36,21 +37,21 @@ class Task
 	}
 
 	public static function createNewTask(
-		array $errors,
-		string $name = null, Uuid $id  = null,
-		string $body = null, string $status = null) : self
+		Array $errors,
+		String $name = null, Uuid $id  = null,
+		String $body = null, String $status = null) : self
 	{
 		return new self([], $name, $id, $body, $status);
 	}
 
-	public function taskBodyUpdate(string $newBody)
+	public function taskBodyUpdate(String $newBody)
 	{
 		if (strlen($newBody) < self::MinLength) {
-			$this->errors = self::Error['Body Length'];
+			$this->errors = self::Error['302'];
 		} elseif ($this->status === 'completed') {
-			$this->errors = self::Error['Completed'];
+			$this->errors = self::Error['303'];
 		} elseif ($this->status === 'canceled') {
-			$this->errors = self::Error['Canceled'];
+			$this->errors = self::Error['304'];
 		}
 
 		if (empty($this->errors)) {
@@ -58,19 +59,19 @@ class Task
 		}
 	}
 
-	public function taskStatusUpdate(string $newStatus)
+	public function taskStatusUpdate(String $newStatus)
 	{
 		if (!in_array($newStatus, self::PossibleStatus)) 
 		{
-			$this->errors = self::Error['Expected'];
+			$this->errors = self::Error['305'];
 		} 
 		if ($this->status === 'completed' && $newStatus === 'canceled') 
 		{
-			$this->errors = self::Error['Completed'];
+			$this->errors = self::Error['303'];
 		} 
 		if ($this->status === 'canceled' && $newStatus === 'completed') 
 		{
-			$this->errors = self::Error['Completed'];
+			$this->errors = self::Error['304'];
 		}
 		if (empty($this->errors)) {
 			$this->status = $newStatus;
