@@ -9,47 +9,47 @@ class Validator
 	private const UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
 
 	private const Error = [
-		'101' => ['error' => 'Invalid Name Given', 'code' => 400], 
- 		'102' => ['error' => 'Invalid Body Given', 'code' => 400],
- 		'103' => ['error' => 'Invalid Task ID Given', 'code' => 400],
-		'104' => ['error' => 'Invalid Param Given', 'code' => 400],
-		'105' => ['error' => 'Minimum name length is 3', 'code' => 411],
-		'106' => ['error' => 'Minimum body length is 3', 'code' => 411],
+		'Name' => ['body' => 'Invalid Name Given', 'status' => 'Bad Request'], 
+ 		'Body' => ['body' => 'Invalid Body Given', 'status' => 'Bad Request'],
+ 		'ID' => ['body' => 'Invalid Task ID Given', 'status' => 'Bad Request'],
+		'Param' => ['body' => 'Invalid Param Given', 'status' => 'Bad Request'],
+		'Name Length' => ['body' => 'Minimum name length is 3', 'status' => 'Length Required'],
+		'Body Length' => ['body' => 'Minimum body length is 3', 'status' => 'Length Required'],
 	];
 
-	public function validateNewData($name, $body) : Array
+	public function validateNewData($name, $body) : array
 	{
 		if (!is_string($name)) {
-			$this->errors = self::Error['101'];
+			$this->errors = self::Error['Name'];
 		} elseif (strlen($name) < 3) {
-			$this->errors = self::Error['105'];
+			$this->errors = self::Error['Name Length'];
 		} elseif (!is_string($body)) {
-			$this->errors = self::Error['102'];
+			$this->errors = self::Error['Body'];
 		} elseif (strlen($body) < 3) {
-			$this->errors = self::Error['106'];
+			$this->errors = self::Error['Body Length'];
 		}
 		
 		return $this->errors === null ? [] : $this->errors;
 	}
 
-	public function validateUpdateData($id, $newParam) : Array
+	public function validateUpdateData($id, $newParam) : array
 	{
 		if (preg_match(self::UUIDv4, $id) !== 1)
 		{
-			$this->errors = self::Error['102'];
+			$this->errors = self::Error['ID'];
 		}
 		if (!is_string($newParam)) {
-			$this->errors = self::Error['104'];
+			$this->errors = self::Error['Param'];
 		}
 
 		return $this->errors === null ? [] : $this->errors;
 	}
 
-	public function validateID($id) : Array
+	public function validateID($id) : array
 	{
 		if (preg_match(self::UUIDv4, $id) !== 1)
 		{
-			$this->errors = self::Error['102'];
+			$this->errors = self::Error['ID'];
 		}
 
 		return $this->errors === null ? [] : $this->errors;
