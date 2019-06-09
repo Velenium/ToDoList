@@ -7,14 +7,16 @@ use App\TaskData;
 
 class Task
 {
-	private const MinLength = 3;
-	private const PossibleStatus = ['in progress', 'completed', 'canceled'];
+	private const MINLENGTH = 3;
+	private const POSSIBLESTATUS = ['in progress', 'completed', 'canceled'];
 
-	private const Error = [
-		'Body Length' => ['body' => 'Minimum body length is 3', 'status' => 'Length Required'],
-		'Completed' => ['body' => 'Task Already Completed', 'status' => 'Conflict'],
-		'Canceled' => ['body' => 'Task Already Canceled', 'status' => 'Conflict'],
-		'Expected' => ['body' => 'Expected status: in progress/completed/canceled', 'status' => 'Not Acceptable']
+	private const ERRORSTATUS = 'Bad Request';
+
+	private const ERRORBODY = [
+		'Body Length' => 'Minimum body length is 3',
+		'Completed' => 'Task Already Completed',
+		'Canceled' => 'Task Already Canceled',
+		'Expected' => 'Expected status: in progress/completed/canceled',
 	];
 
 	private $errors;
@@ -46,11 +48,11 @@ class Task
 	public function taskBodyUpdate(string $newBody)
 	{
 		 if ($this->status === 'completed') {
-			$this->errors = self::Error['Completed'];
+			$this->errors = self::ERROR['Completed'];
 		} elseif ($this->status === 'canceled') {
-			$this->errors = self::Error['Canceled'];
-		} elseif (strlen($newBody) < self::MinLength) {
-			$this->errors = self::Error['Body Length'];
+			$this->errors = self::ERROR['Canceled'];
+		} elseif (strlen($newBody) < self::MINLENGTH) {
+			$this->errors = self::ERROR['Body Length'];
 		}
 
 		if (empty($this->errors)) {
@@ -60,17 +62,17 @@ class Task
 
 	public function taskStatusUpdate(string $newStatus)
 	{
-		if (!in_array($newStatus, self::PossibleStatus)) 
+		if (!in_array($newStatus, self::POSSIBLESTATUS)) 
 		{
-			$this->errors = self::Error['Expected'];
+			$this->errors = self::ERROR['Expected'];
 		} 
 		if ($this->status === 'completed' && $newStatus === 'canceled') 
 		{
-			$this->errors = self::Error['Completed'];
+			$this->errors = self::ERROR['Completed'];
 		} 
 		if ($this->status === 'canceled' && $newStatus === 'completed') 
 		{
-			$this->errors = self::Error['Canceled'];
+			$this->errors = self::ERROR['Canceled'];
 		}
 		if (empty($this->errors)) {
 			$this->status = $newStatus;

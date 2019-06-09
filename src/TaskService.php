@@ -16,7 +16,7 @@ class TaskService
 	private $serviceResult;
 	private $validator;
 
-	private const Result = [
+	private const RESULT = [
 		'Created' => ['body' => 'Task Created!', 'status' => 'OK'],
 		'Body Updated' => ['body' => 'Body Updated!', 'status' => 'OK'],
 		'Status Updated' => ['body' => 'Status Updated!', 'status' => 'OK'],
@@ -45,7 +45,7 @@ class TaskService
 		$task = Task::createNewTask([], $name, $id, $body, $status);
 		$taskData = $task->getTaskData();
 		$this->repository->create($taskData);
-		$this->serviceResult->formResult(self::Result['Created']);
+		$this->serviceResult->formResult('Created!');
 
 		return $this->serviceResult;
 	}
@@ -61,7 +61,7 @@ class TaskService
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->formResult(self::Result['Not Found']);
+			$this->serviceResult->formResult(self::RESULT['Not Found']);
 			return $this->serviceResult;
 		}
 
@@ -79,7 +79,7 @@ class TaskService
 		}
 
 		$this->repository->update($taskData);
-		$this->serviceResult->formResult(self::Result['Body Updated']);
+		$this->serviceResult->formResult(self::RESULT['Body Updated']);
 
 		return $this->serviceResult;
 	}
@@ -95,7 +95,7 @@ class TaskService
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->formResult(self::Result['Not Found']);
+			$this->serviceResult->formResult(self::RESULT['Not Found']);
 			return $this->serviceResult;
 		}
 
@@ -112,7 +112,7 @@ class TaskService
 		}
 
 		$this->repository->update($taskData);
-		$this->serviceResult->formResult(self::Result['Status Updated']);
+		$this->serviceResult->formResult(self::RESULT['Status Updated']);
 
 		return $this->serviceResult;
 	}
@@ -128,7 +128,7 @@ class TaskService
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->formResult(self::Result['Not Found']);
+			$this->serviceResult->formResult(self::RESULT['Not Found'],);
 			return $this->serviceResult;
 		}
 
@@ -144,7 +144,7 @@ class TaskService
 		}
 
 		$this->repository->delete($taskData);
-		$this->serviceResult->formResult(self::Result['Deleted']);
+		$this->serviceResult->formResult(self::RESULT['Deleted']);
 
 		return $this->serviceResult;
 	}
@@ -160,7 +160,7 @@ class TaskService
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->formResult(self::Result['Not Found']);
+			$this->serviceResult->formResult(self::RESULT['Not Found']);
 			return $this->serviceResult;
 		}
 
@@ -176,7 +176,7 @@ class TaskService
 	{
 		$givenData = $this->repository->findAll();
 		if (empty($givenData)) {
-			$this->serviceResult->formResult(self::Result['Empty']);
+			$this->serviceResult->formResult(self::RESULT['Empty']);
 			return $this->serviceResult;
 		}
 

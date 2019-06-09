@@ -8,7 +8,7 @@ class Validator
 
 	private const UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
 
-	private const Error = [
+	private const ERRORS = [
 		'Name' => ['body' => 'Invalid Name Given', 'status' => 'Bad Request'], 
  		'Body' => ['body' => 'Invalid Body Given', 'status' => 'Bad Request'],
  		'ID' => ['body' => 'Invalid Task ID Given', 'status' => 'Bad Request'],
@@ -20,13 +20,13 @@ class Validator
 	public function validateNewData($name, $body) : array
 	{
 		if (!is_string($name)) {
-			$this->errors = self::Error['Name'];
+			$this->errors = self::ERRORS['Name'];
 		} elseif (strlen($name) < 3) {
-			$this->errors = self::Error['Name Length'];
+			$this->errors = self::ERRORS['Name Length'];
 		} elseif (!is_string($body)) {
-			$this->errors = self::Error['Body'];
+			$this->errors = self::ERRORS['Body'];
 		} elseif (strlen($body) < 3) {
-			$this->errors = self::Error['Body Length'];
+			$this->errors = self::ERRORS['Body Length'];
 		}
 		
 		return $this->errors === null ? [] : $this->errors;
@@ -36,10 +36,10 @@ class Validator
 	{
 		if (preg_match(self::UUIDv4, $id) !== 1)
 		{
-			$this->errors = self::Error['ID'];
+			$this->errors = self::ERRORS['ID'];
 		}
 		if (!is_string($newParam)) {
-			$this->errors = self::Error['Param'];
+			$this->errors = self::ERRORS['Param'];
 		}
 
 		return $this->errors === null ? [] : $this->errors;
@@ -49,7 +49,7 @@ class Validator
 	{
 		if (preg_match(self::UUIDv4, $id) !== 1)
 		{
-			$this->errors = self::Error['ID'];
+			$this->errors = self::ERRORS['ID'];
 		}
 
 		return $this->errors === null ? [] : $this->errors;
