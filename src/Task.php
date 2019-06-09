@@ -10,7 +10,7 @@ class Task
 	private const MinLength = 3;
 	private const PossibleStatus = ['in progress', 'completed', 'canceled'];
 
-	public const Error = [
+	private const Error = [
 		'301' => ['error' => 'Minimum name length is 3', 'code' => 411],
 		'302' => ['error' => 'Minimum body length is 3', 'code' => 411],
 		'303' => ['error' => 'Task Already Completed', 'code' => 409],
