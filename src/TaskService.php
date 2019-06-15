@@ -128,7 +128,7 @@ class TaskService
 		$id = Uuid::FromString($id);
 		$givenData = $this->repository->find($id);
 		if (empty($givenData)) {
-			$this->serviceResult->formResult(self::RESULT['Not Found'],);
+			$this->serviceResult->formResult(self::RESULT['Not Found']);
 			return $this->serviceResult;
 		}
 
