@@ -30,12 +30,12 @@ $map->post('add.task', '/tasks', function (ServerRequest $request) use ($control
 	return $controller->createNewTask($request);
 });
 
-$map->put('set.new.body', '/tasks/{id}/body/update', function (ServerRequest $request) use ($controller) : Response
+$map->put('set.new.body', '/tasks/{id}/body', function (ServerRequest $request) use ($controller) : Response
 {
 	return $controller->taskBodyUpdate($request);
 });
 
-$map->put('set.new.status', '/tasks/{id}/status/update', function (ServerRequest $request) use ($controller) : Response
+$map->put('set.new.status', '/tasks/{id}/status', function (ServerRequest $request) use ($controller) : Response
 {
 	return $controller->taskStatusUpdate($request);
 });
