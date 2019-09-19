@@ -53,30 +53,30 @@
 	$ make start
 	```
 4. С помощью утилиты httpie создать http запрос к одному из существующих роутов:
-- Добавить задачу
-	```
-	$ http POST :8000/tasks name=='task name' body=='body content'
-	```
-- Изменить содержимое задачи
-	```
-	$ http PUT :8000/tasks/{id}/body/update body=='new body content'
-	```
-- Изменить статус задачи (возможные статусы: new, in progress, completed)
-	```
-	$ http PUT :8000/tasks/{id}/status/update status=='in progress'
-	```
-- Удалить задачу
-	```
-	$ http DELETE :8000/tasks/{id}
-	```
-- Вернуть конкретную задачу по ее id
-	```
-	$ http GET :8000/tasks/{id}
-	```
-- Вернуть весь список задач
-	```
-	$ http GET :8000/tasks
-	```
+	- Добавить задачу
+		```
+		$ http POST :8000/tasks name=='task name' body=='body content'
+		```
+	- Изменить содержимое задачи
+		```
+		$ http PUT :8000/tasks/{id}/body/update body=='new body content'
+		```
+	- Изменить статус задачи (возможные статусы: new, in progress, completed)
+		```
+		$ http PUT :8000/tasks/{id}/status/update status=='in progress'
+		```
+	- Удалить задачу
+		```
+		$ http DELETE :8000/tasks/{id}
+		```
+	- Вернуть конкретную задачу по ее id
+		```
+		$ http GET :8000/tasks/{id}
+		```
+	- Вернуть весь список задач
+		```
+		$ http GET :8000/tasks
+		```
 
 ### Выводы
 В ходе написания моего первого проекта я узнал о следующих вещах:
